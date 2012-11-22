@@ -123,7 +123,7 @@ namespace QualityEnforcer
             if (changes.TrimTrailingLines)
                 changeList += "* Removed trailing newlines" + Environment.NewLine;
             if (changes.TrimTrailingWhitespace)
-                changeList += "* Remoted trailing whitespace" + Environment.NewLine;
+                changeList += "* Removed trailing whitespace" + Environment.NewLine;
             return changeList;
         }
     }

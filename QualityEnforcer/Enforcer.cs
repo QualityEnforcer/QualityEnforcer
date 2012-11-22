@@ -48,14 +48,22 @@ namespace QualityEnforcer
                 }));
 
             int lfCount = 0, crlfCount = 0, spaceCount = 0, tabCount = 0;
+            double averageSpaces = 0;
 
             foreach (var file in project.CodeFiles)
             {
+                var ext = Path.GetExtension(file);
+                var lang = LanguageMap.GetLanguageForExtension(ext);
+                if (!project.LanguageDistribution.ContainsKey(lang))
+                    project.LanguageDistribution[lang] = 1;
+                else
+                    project.LanguageDistribution[lang]++;
                 var map = FileMap.GenerateMap(file);
                 lfCount += map.LFUsed;
                 crlfCount += map.CRLFUsed;
                 spaceCount += map.SpacesUsed;
                 tabCount += map.TabsUsed;
+                averageSpaces += map.AverageSpaces;
             }
 
             if (lfCount < crlfCount)
@@ -68,16 +76,94 @@ namespace QualityEnforcer
             else
                 project.Indentation = IndentationStyle.Spaces;
 
+            project.NumberOfSpaces = (int)(averageSpaces / spaceCount);
+
             return project;
         }
 
-        public static void EnforceQuality(Project project, QualityRules rules)
+        public static ChangeSummary EnforceQuality(Project project, QualityRules rules)
         {
+            ChangeSummary summary = new ChangeSummary();
+            string indent, lineEnding;
+            // Set up indent and line ending stles
+            if (rules.Indentation == IndentationStyle.Detect)
+            {
+                if (project.Indentation == IndentationStyle.Spaces)
+                {
+                    indent = "";
+                    int spaces = project.NumberOfSpaces;
+                    if (rules.NumberOfSpaces != null)
+                        spaces = rules.NumberOfSpaces.Value;
+                    for (int i = 0; i < spaces; i++) indent += " ";
+                }
+                else
+                    indent = "\t";
+            }
+            else if (rules.Indentation == IndentationStyle.Spaces)
+            {
+                indent = "";
+                for (int i = 0; i < rules.NumberOfSpaces; i++) indent += " ";
+            }
+            else
+                indent = "\t";
+            if (rules.LineEndings == LineEndingStyle.Detect)
+            {
+                if (project.LineEndings == LineEndingStyle.CRLF)
+                    lineEnding = "\r\n";
+                else
+                    lineEnding = "\n";
+            }
+            else if (rules.LineEndings == LineEndingStyle.CRLF)
+                lineEnding = "\r\n";
+            else
+                lineEnding = "\n";
+            // Apply changes
             foreach (var file in project.CodeFiles)
             {
                 var map = FileMap.GenerateMap(file);
+                // Detect changes
+                if (map.LFUsed != map.CRLFUsed && summary.LineEndingStyleChange == LineEndingStyleChange.None)
+                {
+                    if (project.LineEndings == LineEndingStyle.CRLF)
+                        summary.LineEndingStyleChange = LineEndingStyleChange.ToCRLF;
+                    else
+                        summary.LineEndingStyleChange = LineEndingStyleChange.ToLF;
+                }
+                if (map.TabsUsed != map.SpacesUsed && summary.IndentationStyleChange == IndentationStyleChange.None)
+                {
+                    if (project.Indentation == IndentationStyle.Spaces)
+                        summary.IndentationStyleChange = IndentationStyleChange.ToSpaces;
+                    else
+                        summary.IndentationStyleChange = IndentationStyleChange.ToTabs;
+                }
                 // Create new file based on old
+                File.Delete(file);
+                var writer = new StreamWriter(file);
+                int end = map.Lines.Length;
+                if (rules.TrimTrailingLines)
+                {
+                    if (map.TrailingLines != 0)
+                        summary.TrimTrailingLines = true;
+                    end -= map.TrailingLines;
+                }
+                for (int i = 0; i < map.Lines.Length; i++)
+                {
+                    // Reconstruct file
+                    var line = map.Lines[i];
+                    if (rules.TrimTrailingWhitespace)
+                    {
+                        if (summary.TrimTrailingWhitespace == false)
+                            summary.TrimTrailingWhitespace = line.EndsWith(" ") || line.EndsWith("\t");
+                        line = line.TrimEnd(' ', '\t');
+                    }
+                    line = line.TrimStart(' ', '\t');
+                    for (int j = 0; j < map.Indentation[i]; j++)
+                        line = indent + line;
+                    writer.Write(line + lineEnding);
+                }
+                writer.Close();
             }
+            return summary;
         }
     }
 }

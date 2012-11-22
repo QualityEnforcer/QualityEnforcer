@@ -7,13 +7,20 @@ namespace QualityEnforcer
 {
     public class ChangeSummary
     {
-        public TabStyleChange TabStyleChange { get; set; }
+        public ChangeSummary()
+        {
+            IndentationStyleChange = IndentationStyleChange.None;
+            LineEndingStyleChange = LineEndingStyleChange.None;
+            TrimTrailingLines = TrimTrailingWhitespace = false;
+        }
+
+        public IndentationStyleChange IndentationStyleChange { get; set; }
         public LineEndingStyleChange LineEndingStyleChange { get; set; }
         public bool TrimTrailingWhitespace { get; set; }
         public bool TrimTrailingLines { get; set; }
     }
 
-    public enum TabStyleChange
+    public enum IndentationStyleChange
     {
         None,
         ToSpaces,

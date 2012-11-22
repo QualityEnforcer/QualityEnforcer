@@ -24,6 +24,7 @@ namespace QualityEnforcer
         public int TabsUsed { get; set; }
         public int CRLFUsed { get; set; }
         public int LFUsed { get; set; }
+        internal double AverageSpaces { get; set; } // Internal because it's deceptively named
         public int TrailingLines { get; set; }
 
         /// <summary>
@@ -31,6 +32,8 @@ namespace QualityEnforcer
         /// -1 is for empty lines.
         /// </summary>
         public int[] Indentation { get; set; }
+
+        public string[] Lines { get; set; }
 
         public static FileMap GenerateMap(string path)
         {
@@ -41,24 +44,28 @@ namespace QualityEnforcer
             map.CRLFUsed = text.Count(c => c == '\r');
             map.LFUsed -= map.CRLFUsed;
 
-            var lines = text.Replace("\r", "").Split('\n');
-            map.Indentation = new int[lines.Length];
+            map.Lines = text.Replace("\r", "").Split('\n');
+            map.Indentation = new int[map.Lines.Length];
+
+            map.AverageSpaces = 0;
 
             int previousIndent = 0, currentIndent = 0;
 
-            for (int i = 0; i < lines.Length; i++)
+            for (int i = 0; i < map.Lines.Length; i++)
             {
-                string line = lines[i];
+                string line = map.Lines[i];
                 int indent;
                 if (string.IsNullOrWhiteSpace(line))
                 {
                     map.Indentation[i] = -1;
                     continue;
                 }
+                int spaces = 0;
                 if (line.StartsWith(" "))
                 {
                     map.SpacesUsed++;
                     indent = CountStart(line, ' ');
+                    spaces = indent;
                 }
                 else if (line.StartsWith("\t"))
                 {
@@ -76,6 +83,8 @@ namespace QualityEnforcer
                 else if (previousIndent > indent)
                     currentIndent--;
                 map.Indentation[i] = currentIndent;
+                if (spaces != 0)
+                    map.AverageSpaces += spaces / map.Indentation[i];
                 previousIndent = indent;
             }
 

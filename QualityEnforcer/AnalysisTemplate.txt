@@ -1,0 +1,11 @@
+﻿# Project Analysis
+
+## Languages
+
+Quality Enforcer recognized these languages:
+
+{languages}
+## Coding Style
+
+* **Line Endings:** {line-endings}
+* **Indentation:** {indentation}

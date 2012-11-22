@@ -14,6 +14,7 @@ namespace QualityEnforcer
             TrimTrailingWhitespace = true;
             LineEndings = LineEndingStyle.Detect;
             Indentation = IndentationStyle.Detect;
+            NumberOfSpaces = null;
         }
 
         /// <summary>
@@ -27,7 +28,7 @@ namespace QualityEnforcer
         /// <summary>
         /// If Indentation is set to use spaces, this number determines how many to use.
         /// </summary>
-        public int NumberOfSpaces { get; set; }
+        public int? NumberOfSpaces { get; set; }
         /// <summary>
         /// If true, excess empty lines at the end of a file are removed.
         /// </summary>

@@ -25,10 +25,12 @@ options:
 
 ### Options
 
-**--analyze \[output]:** Quality Enforcer will not make any changes, but will instead analyze the project and
-produce a summary at \[output].
+**--analysis `file`:** Quality Enforcer will not make any changes, but will instead analyze the project and
+produce a summary in markdown format at `file`.
 
-**--options \[file]:** Instead of using .qualityrules at the project root, this file will be used instead.
+**--options `file`:** Instead of using .qualityrules at the project root, this file will be used instead.
+
+**--summary `file`:** Outputs a summary of the changes in markdown format to `file`.
 
 ## Quality Rules
 

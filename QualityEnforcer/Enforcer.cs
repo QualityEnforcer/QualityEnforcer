@@ -103,9 +103,13 @@ namespace QualityEnforcer
             {
                 indent = "";
                 for (int i = 0; i < rules.NumberOfSpaces; i++) indent += " ";
+                project.Indentation = IndentationStyle.Spaces;
             }
             else
+            {
                 indent = "\t";
+                project.Indentation = IndentationStyle.Tabs;
+            }
             if (rules.LineEndings == LineEndingStyle.Detect)
             {
                 if (project.LineEndings == LineEndingStyle.CRLF)
@@ -114,9 +118,15 @@ namespace QualityEnforcer
                     lineEnding = "\n";
             }
             else if (rules.LineEndings == LineEndingStyle.CRLF)
+            {
                 lineEnding = "\r\n";
+                project.LineEndings = LineEndingStyle.CRLF;
+            }
             else
+            {
                 lineEnding = "\n";
+                project.LineEndings = LineEndingStyle.LF;
+            }
             // Apply changes
             foreach (var file in project.CodeFiles)
             {

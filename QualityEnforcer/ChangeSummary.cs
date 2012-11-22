@@ -14,6 +14,15 @@ namespace QualityEnforcer
             TrimTrailingLines = TrimTrailingWhitespace = false;
         }
 
+        public bool Any
+        {
+            get
+            {
+                return IndentationStyleChange != QualityEnforcer.IndentationStyleChange.None ||
+                    LineEndingStyleChange != QualityEnforcer.LineEndingStyleChange.None ||
+                    TrimTrailingWhitespace || TrimTrailingLines;
+            }
+        }
         public IndentationStyleChange IndentationStyleChange { get; set; }
         public LineEndingStyleChange LineEndingStyleChange { get; set; }
         public bool TrimTrailingWhitespace { get; set; }

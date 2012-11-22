@@ -73,7 +73,7 @@ namespace QualityEnforcer
             }
         }
 
-        private static string GenerateAnalysis(Project project)
+        public static string GenerateAnalysis(Project project)
         {
             var reader = new StreamReader(
                 Assembly.GetExecutingAssembly().GetManifestResourceStream("QualityEnforcer.AnalysisTemplate.txt"));
@@ -95,7 +95,7 @@ namespace QualityEnforcer
             return template;
         }
 
-        private static string GenerateSummary(Project project, ChangeSummary changes)
+        public static string GenerateSummary(Project project, ChangeSummary changes)
         {
             var reader = new StreamReader(
                 Assembly.GetExecutingAssembly().GetManifestResourceStream("QualityEnforcer.SummaryTemplate.txt"));

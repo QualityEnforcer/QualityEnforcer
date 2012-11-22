@@ -19,7 +19,7 @@ Keep in mind, it's pretty embarassing if this particular repository isn't well-w
 * Line endings: CRLF
 * Indentation: 4 spaces
 
-(*For those of you watching at home, those last two bullet points are quality rules that
-Quality Enforcer will recognize as rules*)
+*For those of you watching at home, those last two bullet points are quality rules that
+Quality Enforcer will recognize as rules*
 
 In general, stick to the style that's already there and you'll do fine.

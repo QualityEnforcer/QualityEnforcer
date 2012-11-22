@@ -56,3 +56,9 @@ Available options include:
 
 [Click here](https://github.com/blog/1184-contributing-guidelines) to learn why I went with "CONTRIBUTING.md" as
 the quality rule file name. You can always override this with --rules.
+
+## Bugs? Need help?
+
+Please [make an issue](https://github.com/QualityEnforcer/QualityEnforcer/issues/new) if you encounter a bug or
+require assistance. There are many, many varieties of coding styles, and surely this won't work on all of them -
+but if you tell me about the edge cases, I'll see about fixing them.

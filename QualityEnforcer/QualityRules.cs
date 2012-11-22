@@ -39,10 +39,10 @@ namespace QualityEnforcer
         /// </summary>
         public bool TrimTrailingWhitespace { get; set; }
 
-        public static QualityRules FromFile(string file)
+        public static QualityRules Parse(string contents)
         {
             QualityRules rules = new QualityRules();
-            var lines = File.ReadAllLines(file);
+            var lines = contents.Replace("\r", "").Split('\n');
             foreach (var line in lines)
             {
                 if (line.StartsWith("* "))
@@ -84,6 +84,12 @@ namespace QualityEnforcer
                 }
             }
             return rules;
+        }
+
+        public static QualityRules FromFile(string file)
+        {
+            var text = File.ReadAllText(file);
+            return QualityRules.Parse(text);
         }
     }
 }

@@ -8,12 +8,14 @@ namespace QualityEnforcer
 {
     public enum LineEndingStyle
     {
+        Detect,
         LF,
         CRLF
     }
 
     public enum IndentationStyle
     {
+        Detect,
         Tabs,
         Spaces
     }

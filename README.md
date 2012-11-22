@@ -8,3 +8,43 @@ Quality Enforcer is a tool for making coding styles consistent across projects. 
 * Trailing whitespace
 
 It can also do some basic code analysis, such as how much of a certain style your project uses.
+
+Quality Enforcer may also be used as a C# library for more customized quality control.
+
+## Usage
+
+**NOTE**: Not implemented
+
+    QualityEnforcer.exe [options...] path/to/project/
+
+The default option is to detect line endings and indentation style, and use the most common, as well as these
+options:
+
+* Trim trailing whitespace
+* Trim trailing lines
+
+### Options
+
+**--analyze \[output]:** Quality Enforcer will not make any changes, but will instead analyze the project and
+produce a summary at \[output].
+
+**--options \[file]:** Instead of using .qualityrules at the project root, this file will be used instead.
+
+## Quality Rules
+
+Optionally, a `.qualityrules` file may be placed in the root of the project to pull code styles from. This file
+is simple, following the `key=value` format. An example:
+
+    # Comments may be made like this. Empty lines are ignored.
+
+    LineEndings=LF
+    Indentation=Spaces
+    NumberOfSpaces=4
+
+Available options include:
+
+* **LineEndings:** Detect/LF/CRLF. Default: Detect
+* **Indentation:** Detect/Tabs/Spaces. Default: Detect
+* **NumberOfSpaces:** Integer. For use with space-style indentation. Default: 4
+* **TrimTrailingLines:** Boolean. Default: True
+* **TrimTrailingWhitespace:** Boolean. Default: True

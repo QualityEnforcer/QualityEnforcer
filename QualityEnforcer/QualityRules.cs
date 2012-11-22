@@ -10,24 +10,16 @@ namespace QualityEnforcer
         public QualityRules()
         {
             // Default rules
-            DetectIndentation = false;
-            DetectLineEndings = false;
             TrimTrailingLines = true;
             TrimTrailingWhitespace = true;
+            LineEndings = LineEndingStyle.Detect;
+            Indentation = IndentationStyle.Detect;
         }
 
-        /// <summary>
-        /// Set to true of LineEndings should be determined by taking the most used style.
-        /// </summary>
-        public bool DetectLineEndings { get; set; }
         /// <summary>
         /// If DetectLineEndings is false, this value is used to determine line ending style.
         /// </summary>
         public LineEndingStyle LineEndings { get; set; }
-        /// <summary>
-        /// Set to true if Indentation should be determined by taking the most used style.
-        /// </summary>
-        public bool DetectIndentation { get; set; }
         /// <summary>
         /// If DetectIndentation is false, this value is used to determine indent style.
         /// </summary>

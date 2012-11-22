@@ -102,6 +102,15 @@ namespace QualityEnforcer
             var template = reader.ReadToEnd();
             reader.Close();
 
+            var changeList = CreateChangeList(changes);
+
+            template = template.Replace("{changes}", changeList);
+
+            return template;
+        }
+
+        public static string CreateChangeList(ChangeSummary changes)
+        {
             var changeList = "";
             if (changes.IndentationStyleChange == IndentationStyleChange.ToSpaces)
                 changeList += "* Converted tabs to spaces" + Environment.NewLine;
@@ -115,10 +124,7 @@ namespace QualityEnforcer
                 changeList += "* Removed trailing newlines" + Environment.NewLine;
             if (changes.TrimTrailingWhitespace)
                 changeList += "* Remoted trailing whitespace" + Environment.NewLine;
-
-            template = template.Replace("{changes}", changeList);
-
-            return template;
+            return changeList;
         }
     }
 }

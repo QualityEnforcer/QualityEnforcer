@@ -7,7 +7,12 @@ Quality Enforcer is a tool for making coding styles consistent across projects. 
 * Trailing new lines
 * Trailing whitespace
 
-It can also do some basic code analysis, such as how much of a certain style your project uses.
+It can also do some basic code analysis, such as how much of a certain style your project uses. Extra fancy
+features include:
+
+* Generating language division statistics
+* Detecting simple mistakes like adding an extra space of indentation
+* Generating indentation maps of files
 
 Quality Enforcer may also be used as a C# library for more customized quality control.
 

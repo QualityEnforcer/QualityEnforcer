@@ -14,6 +14,7 @@ namespace QualityEnforcer
         {
             string directory = null;
             string analysis = null;
+            string summary = null;
             for (int i = 0; i < args.Length; i++)
             {
                 string arg = args[i];
@@ -23,6 +24,9 @@ namespace QualityEnforcer
                     {
                         case "--analysis":
                             analysis = args[++i];
+                            break;
+                        case "--summary":
+                            summary = args[++i];
                             break;
                         default:
                             Console.WriteLine("Invalid parameters. Use QualityEnforcer.exe --help for more information.");
@@ -48,17 +52,19 @@ namespace QualityEnforcer
             var project = Enforcer.AnalyzeDirectory(directory);
             if (analysis != null)
             {
-                GenerateAnalysis(project, analysis);
+                File.WriteAllText(analysis, GenerateAnalysis(project));
                 return;
             }
             else
             {
                 // Enforce style
                 var changes = Enforcer.EnforceQuality(project, new QualityRules());
+                if (summary != null)
+                    File.WriteAllText(summary, GenerateSummary(project, changes));
             }
         }
 
-        private static void GenerateAnalysis(Project project, string analysis)
+        private static string GenerateAnalysis(Project project)
         {
             var reader = new StreamReader(
                 Assembly.GetExecutingAssembly().GetManifestResourceStream("QualityEnforcer.AnalysisTemplate.txt"));
@@ -77,7 +83,33 @@ namespace QualityEnforcer
             template = template.Replace("{line-endings}", project.LineEndings.ToString());
             template = template.Replace("{indentation}", project.Indentation.ToString());
 
-            File.WriteAllText(analysis, template);
+            return template;
+        }
+
+        private static string GenerateSummary(Project project, ChangeSummary changes)
+        {
+            var reader = new StreamReader(
+                Assembly.GetExecutingAssembly().GetManifestResourceStream("QualityEnforcer.SummaryTemplate.txt"));
+            var template = reader.ReadToEnd();
+            reader.Close();
+
+            var changeList = "";
+            if (changes.IndentationStyleChange == IndentationStyleChange.ToSpaces)
+                changeList += "* Converted tabs to spaces" + Environment.NewLine;
+            if (changes.IndentationStyleChange == IndentationStyleChange.ToTabs)
+                changeList += "* Converted spaces to tabs" + Environment.NewLine;
+            if (changes.LineEndingStyleChange == LineEndingStyleChange.ToCRLF)
+                changeList += "* Converted LF to CRLF" + Environment.NewLine;
+            if (changes.LineEndingStyleChange == LineEndingStyleChange.ToLF)
+                changeList += "* Converted CRLF to LF" + Environment.NewLine;
+            if (changes.TrimTrailingLines)
+                changeList += "* Removed trailing newlines" + Environment.NewLine;
+            if (changes.TrimTrailingWhitespace)
+                changeList += "* Remoted trailing whitespace" + Environment.NewLine;
+
+            template = template.Replace("{changes}", changeList);
+
+            return template;
         }
     }
 }

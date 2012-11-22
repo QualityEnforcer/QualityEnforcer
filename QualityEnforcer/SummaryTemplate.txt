@@ -1,0 +1,5 @@
+﻿# Quality Enforcement Summary
+
+The following changes were applied:
+
+{changes}

@@ -58,6 +58,7 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="SummaryTemplate.txt" />
     <Content Include="Test\test.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

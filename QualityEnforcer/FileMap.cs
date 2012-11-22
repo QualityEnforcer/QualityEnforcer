@@ -65,6 +65,13 @@ namespace QualityEnforcer
                 {
                     map.SpacesUsed++;
                     indent = CountStart(line, ' ');
+                    if (map.SpacesUsed != 0 &&
+                        Math.Abs(indent - previousIndent) <
+                        (map.AverageSpaces / map.SpacesUsed) * 0.5)
+                    {
+                        // If it's less than half of the average away from the last indent, assume it's a mistake
+                        indent = previousIndent;
+                    }
                     spaces = indent;
                 }
                 else if (line.StartsWith("\t"))
@@ -83,8 +90,8 @@ namespace QualityEnforcer
                 else if (previousIndent > indent)
                     currentIndent--;
                 map.Indentation[i] = currentIndent;
-                if (spaces != 0)
-                    map.AverageSpaces += spaces / map.Indentation[i];
+                if (spaces != 0 && currentIndent != 0)
+                    map.AverageSpaces += spaces / currentIndent;
                 previousIndent = indent;
             }
 

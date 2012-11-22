@@ -18,8 +18,6 @@ Quality Enforcer may also be used as a C# library for more customized quality co
 
 ## Usage
 
-**NOTE**: Not implemented
-
     QualityEnforcer.exe [options...] path/to/project/
 
 The default option is to detect line endings and indentation style, and use the most common, as well as these
@@ -33,25 +31,28 @@ options:
 **--analysis `file`:** Quality Enforcer will not make any changes, but will instead analyze the project and
 produce a summary in markdown format at `file`.
 
-**--options `file`:** Instead of using .qualityrules at the project root, this file will be used instead.
+**--rules `file`:** Instead of using CONTRIBUTING.md at the project root, this file will be used instead.
 
 **--summary `file`:** Outputs a summary of the changes in markdown format to `file`.
 
 ## Quality Rules
 
-Optionally, a `.qualityrules` file may be placed in the root of the project to pull code styles from. This file
-is simple, following the `key=value` format. An example:
+Optionally, Quality Enforcer can pull rules from the CONTRIBUTING.md file in the project. Because this file is
+usually intented for human reading, the quality rules format is generally human-readable. Feel free to examine
+this repository's CONTRIBUTING.md for an example. Rules take this form:
 
-    # Comments may be made like this. Empty lines are ignored.
+* Rule name: value
 
-    LineEndings=LF
-    Indentation=Spaces
-    NumberOfSpaces=4
+For boolean options, merely including the option name will be sufficient, no need to include 'true'. You may omit
+any values you wish, and the default option is to attempt to detect the style your project already uses. All of
+these are case-insensitive.
 
 Available options include:
 
-* **LineEndings:** Detect/LF/CRLF. Default: Detect
-* **Indentation:** Detect/Tabs/Spaces. Default: Detect
-* **NumberOfSpaces:** Integer. For use with space-style indentation. Default: 4
-* **TrimTrailingLines:** Boolean. Default: True
-* **TrimTrailingWhitespace:** Boolean. Default: True
+* **Line endings:** CRLF|LF
+* **Indentation:** Tabs|\[number] spaces
+* **Trim trailing lines**
+* **Trim trailing whitespace**
+
+[Click here](https://github.com/blog/1184-contributing-guidelines) to learn why I went with "CONTRIBUTING.md" as
+the quality rule file name. You can always override this with --rules.

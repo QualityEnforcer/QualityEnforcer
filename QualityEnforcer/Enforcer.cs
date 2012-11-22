@@ -143,10 +143,12 @@ namespace QualityEnforcer
                 if (rules.TrimTrailingLines)
                 {
                     if (map.TrailingLines != 0)
+                    {
                         summary.TrimTrailingLines = true;
-                    end -= map.TrailingLines;
+                        end -= map.TrailingLines;
+                    }
                 }
-                for (int i = 0; i < map.Lines.Length; i++)
+                for (int i = 0; i < end; i++)
                 {
                     // Reconstruct file
                     var line = map.Lines[i];
@@ -159,7 +161,10 @@ namespace QualityEnforcer
                     line = line.TrimStart(' ', '\t');
                     for (int j = 0; j < map.Indentation[i]; j++)
                         line = indent + line;
-                    writer.Write(line + lineEnding);
+                    if (i != end - 1)
+                        writer.Write(line + lineEnding);
+                    else
+                        writer.Write(line);
                 }
                 writer.Close();
             }

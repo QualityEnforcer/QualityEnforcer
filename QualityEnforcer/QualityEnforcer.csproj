@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Test\CONTRIBUTING.md" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SummaryTemplate.txt" />

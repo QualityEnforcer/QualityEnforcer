@@ -15,6 +15,7 @@ namespace QualityEnforcer
             string directory = null;
             string analysis = null;
             string summary = null;
+            string rules = null;
             for (int i = 0; i < args.Length; i++)
             {
                 string arg = args[i];
@@ -27,6 +28,9 @@ namespace QualityEnforcer
                             break;
                         case "--summary":
                             summary = args[++i];
+                            break;
+                        case "--rules":
+                            rules = args[++i];
                             break;
                         default:
                             Console.WriteLine("Invalid parameters. Use QualityEnforcer.exe --help for more information.");
@@ -58,7 +62,12 @@ namespace QualityEnforcer
             else
             {
                 // Enforce style
-                var changes = Enforcer.EnforceQuality(project, new QualityRules());
+                QualityRules qualityRules = new QualityRules();
+                if (rules != null)
+                    qualityRules = QualityRules.FromFile(rules);
+                else if (File.Exists(Path.Combine(directory, "CONTRIBUTING.md")))
+                    qualityRules = QualityRules.FromFile(Path.Combine(directory, "CONTRIBUTING.md"));
+                var changes = Enforcer.EnforceQuality(project, qualityRules);
                 if (summary != null)
                     File.WriteAllText(summary, GenerateSummary(project, changes));
             }

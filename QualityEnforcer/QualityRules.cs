@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -37,5 +38,52 @@ namespace QualityEnforcer
         /// If true, excess tabs and spaces are trimmed from the end of each line.
         /// </summary>
         public bool TrimTrailingWhitespace { get; set; }
+
+        public static QualityRules FromFile(string file)
+        {
+            QualityRules rules = new QualityRules();
+            var lines = File.ReadAllLines(file);
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("* "))
+                {
+                    // Attempt to interpret as a rule
+                    string key = line.Substring(2);
+                    string value = null;
+                    if (key.Contains(":"))
+                    {
+                        value = key.Substring(key.IndexOf(":") + 1).Trim().ToLower();
+                        key = key.Remove(key.IndexOf(":"));
+                    }
+                    key = key.Trim().ToLower();
+                    switch (key)
+                    {
+                        case "line endings":
+                            if (value == null) break;
+                            if (value == "crlf") rules.LineEndings = LineEndingStyle.CRLF;
+                            if (value == "lf") rules.LineEndings = LineEndingStyle.LF;
+                            break;
+                        case "indentation":
+                            if (value == null) break;
+                            if (value == "tabs") rules.Indentation = IndentationStyle.Tabs;
+                            int spaces;
+                            if (value.EndsWith("spaces") && int.TryParse(
+                                value.Remove(value.IndexOf(' ')), out spaces))
+                            {
+                                rules.Indentation = IndentationStyle.Spaces;
+                                rules.NumberOfSpaces = spaces;
+                            }
+                            break;
+                        case "trim trailing lines":
+                            rules.TrimTrailingLines = true;
+                            break;
+                        case "trim trailing whitespace":
+                            rules.TrimTrailingWhitespace = true;
+                            break;
+                    }
+                }
+            }
+            return rules;
+        }
     }
 }

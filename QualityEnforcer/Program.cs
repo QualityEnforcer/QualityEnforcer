@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace QualityEnforcer
 {
-    internal class Program
+    public class Program
     {
         public static void Main(string[] args)
         {
